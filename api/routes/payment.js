@@ -101,15 +101,36 @@ router.post('/payment', async (req, res) => {
 
     // クーポン割引の検証（この商品のみに適用可能）
     const discounts = [];
-    const isValidCoupon = couponCode && 
-                          couponCode.trim().toUpperCase() === 'COEDO9824' && 
-                          productId === 'this-is-ai-sound';
+    const normalizedCoupon = couponCode ? couponCode.trim().toUpperCase() : '';
+    const isCoedoCoupon = normalizedCoupon === 'COEDO9824';
+    const isTestCoupon = normalizedCoupon === '100YENTEST';
+    const isValidCoupon = (isCoedoCoupon || isTestCoupon) && productId === 'this-is-ai-sound';
+
+    let shippingFee = SHIPPING_FEE_JPY;
 
     if (isValidCoupon) {
-      const discountAmount = 1000n * BigInt(quantity);
-      discounts.push({
-        name: 'クーポン割引 (COEDO9824)',
-        amountMoney: { amount: discountAmount, currency: 'JPY' }
+      if (isCoedoCoupon) {
+        const discountAmount = 1000n * BigInt(quantity);
+        discounts.push({
+          name: 'クーポン割引 (COEDO9824)',
+          amountMoney: { amount: discountAmount, currency: 'JPY' }
+        });
+      } else if (isTestCoupon) {
+        const discountAmount = 2400n * BigInt(quantity);
+        discounts.push({
+          name: 'テストクーポン割引 (100YENTEST)',
+          amountMoney: { amount: discountAmount, currency: 'JPY' }
+        });
+        shippingFee = 0;
+      }
+    }
+
+    const serviceCharges = [];
+    if (shippingFee > 0) {
+      serviceCharges.push({
+        name: '送料（全国一律）',
+        amountMoney: { amount: BigInt(shippingFee), currency: 'JPY' },
+        calculationPhase: 'TOTAL_PHASE',
       });
     }
 
@@ -125,13 +146,7 @@ router.post('/payment', async (req, res) => {
             quantity: String(quantity),
           }
         ],
-        serviceCharges: [
-          {
-            name: '送料（全国一律）',
-            amountMoney: { amount: BigInt(SHIPPING_FEE_JPY), currency: 'JPY' },
-            calculationPhase: 'TOTAL_PHASE',
-          }
-        ],
+        serviceCharges: serviceCharges.length > 0 ? serviceCharges : undefined,
         discounts: discounts.length > 0 ? discounts : undefined,
         fulfillments: [
           {
@@ -221,12 +236,12 @@ router.post('/payment', async (req, res) => {
                 </tr>
                 <tr>
                   <td style="padding: 6px 0;"><strong>送料（全国一律）:</strong></td>
-                  <td style="text-align: right;">¥300</td>
+                  <td style="text-align: right;">${shippingFee === 0 ? '無料' : '¥300'}</td>
                 </tr>
                 ${isValidCoupon ? `
                 <tr style="color: #ff6b6b;">
-                  <td style="padding: 6px 0;"><strong>クーポン割引 (COEDO9824):</strong></td>
-                  <td style="text-align: right;">-¥${Number(1000 * quantity).toLocaleString()}</td>
+                  <td style="padding: 6px 0;"><strong>クーポン割引 (${normalizedCoupon}):</strong></td>
+                  <td style="text-align: right;">-¥${Number((isCoedoCoupon ? 1000 : 2400) * quantity).toLocaleString()}</td>
                 </tr>` : ''}
                 <tr style="border-top: 1px solid #e6dfd3; font-weight: bold; font-size: 1.05rem;">
                   <td style="padding: 10px 0 0;">合計金額:</td>

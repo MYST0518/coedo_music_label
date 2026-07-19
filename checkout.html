@@ -278,9 +278,25 @@
 
             <hr class="order-line">
 
+            <!-- Coupon Input -->
+            <div class="coupon-wrap" style="margin: 16px 0; padding: 12px; background: rgba(63, 154, 180, 0.05); border-radius: 12px; border: 1px dashed var(--border-color);">
+              <div style="font-size: 0.8rem; font-weight: bold; color: var(--text-primary); margin-bottom: 8px;">クーポンコード</div>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="coupon-input" placeholder="コードを入力" style="flex: 1; padding: 6px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.85rem; outline: none; background: #fff;">
+                <button type="button" id="coupon-apply-btn" style="padding: 6px 16px; background: var(--gold-dark); border: none; border-radius: 8px; color: #fff; font-size: 0.8rem; font-weight: bold; cursor: pointer; transition: opacity 0.2s;">適用</button>
+              </div>
+              <div id="coupon-message" style="font-size: 0.72rem; margin-top: 6px; display: none;"></div>
+            </div>
+
+            <hr class="order-line">
+
             <div class="order-row">
               <span class="label">商品小計</span>
               <span class="value" id="summary-subtotal">¥2,500</span>
+            </div>
+            <div class="order-row" id="coupon-discount-row" style="display: none; color: #ff6b6b;">
+              <span class="label" style="color: #ff6b6b; font-weight: bold;">クーポン割引</span>
+              <span class="value" id="summary-discount">-¥1,000</span>
             </div>
             <div class="order-row">
               <span class="label">送料（全国一律）</span>

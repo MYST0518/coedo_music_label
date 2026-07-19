@@ -17,7 +17,7 @@ const squareClient = new Client({
 // ─── Catalog Constants (Server-Side Source of Truth) ──────────────────────────
 // Square カタログ内の "This is AI Sound" 商品バリエーションID
 const CATALOG_VARIATION_ID = 'BCP7WTTZZSOHWQWNDQNJO5YQ';
-const TOTAL_STOCK = 30; // 限定枚数（フォールバック用）
+const TOTAL_STOCK = 100; // 限定枚数（フォールバック用）
 const SHIPPING_FEE_JPY = 300; // 全国一律送料
 
 // ─── Input Validation Schema ──────────────────────────────────────────────────

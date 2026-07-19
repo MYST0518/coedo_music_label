@@ -14,18 +14,11 @@ const squareClient = new Client({
     : Environment.Sandbox
 });
 
-// ─── Product Catalog (Server-Side Source of Truth) ───────────────────────────
-// Price is ALWAYS determined server-side — never trust client-sent amounts
-const PRODUCTS = {
-  'this-is-ai-sound': {
-    name: 'This is AI Sound — コンピレーションアルバム CD',
-    priceJpy: 2500,  // ¥2,500
-    stock: 100,
-    // In production, track actual stock in a database
-  }
-};
-
-const SHIPPING_FEE_JPY = 300; // ¥300 flat rate
+// ─── Catalog Constants (Server-Side Source of Truth) ──────────────────────────
+// Square カタログ内の "This is AI Sound" 商品バリエーションID
+const CATALOG_VARIATION_ID = 'BCP7WTTZZSOHWQWNDQNJO5YQ';
+const TOTAL_STOCK = 30; // 限定枚数（フォールバック用）
+const SHIPPING_FEE_JPY = 300; // 全国一律送料
 
 // ─── Input Validation Schema ──────────────────────────────────────────────────
 const orderSchema = Joi.object({
@@ -38,7 +31,7 @@ const orderSchema = Joi.object({
       'any.required': 'Payment token is required.'
     }),
   productId: Joi.string()
-    .valid(...Object.keys(PRODUCTS))
+    .valid('this-is-ai-sound')
     .required(),
   quantity: Joi.number()
     .integer()
@@ -56,6 +49,25 @@ const orderSchema = Joi.object({
   }).required()
 });
 
+// ─── GET /api/inventory ───────────────────────────────────────────────────────
+// Square Catalog からリアルタイム在庫数を取得する
+router.get('/inventory', async (req, res) => {
+  try {
+    const response = await squareClient.inventoryApi.retrieveInventoryCount(
+      CATALOG_VARIATION_ID,
+      process.env.SQUARE_LOCATION_ID
+    );
+    const counts = response.result.counts || [];
+    const inStock = counts.find(c => c.state === 'IN_STOCK');
+    const count = inStock ? Math.floor(Number(inStock.quantity)) : 0;
+    res.json({ count, total: TOTAL_STOCK });
+  } catch (err) {
+    console.error('Inventory fetch error:', err?.errors || err.message);
+    // フォールバック: Square APIが取得できなくても表示を壊さない
+    res.json({ count: TOTAL_STOCK, total: TOTAL_STOCK });
+  }
+});
+
 // ─── POST /api/payment ───────────────────────────────────────────────────────
 router.post('/payment', async (req, res) => {
   const requestId = uuidv4();
@@ -70,28 +82,45 @@ router.post('/payment', async (req, res) => {
       return res.status(400).json({ error: 'Invalid order data.', details });
     }
 
-    const { sourceId, productId, quantity, customer } = value;
-    const product = PRODUCTS[productId];
+    const { sourceId, quantity, customer } = value;
 
-    // 2. Server-side price calculation (NEVER trust client)
-    const itemTotal = product.priceJpy * quantity;
-    const totalAmountJpy = itemTotal + SHIPPING_FEE_JPY;
+    console.log(`[${timestamp}][${requestId}] Creating order — ${quantity}x This is AI Sound`);
 
-    // Square API uses amounts in the smallest currency unit (JPY = no decimals, just yen)
-    const amountMoney = {
-      amount: BigInt(totalAmountJpy),
-      currency: 'JPY'
-    };
+    // 2. Square Orders API でカタログ商品の注文を作成
+    //    これにより Square 管理画面に正確な売上・在庫データが反映される
+    const createOrderResponse = await squareClient.ordersApi.createOrder({
+      idempotencyKey: uuidv4(),
+      order: {
+        locationId: process.env.SQUARE_LOCATION_ID,
+        lineItems: [
+          {
+            catalogObjectId: CATALOG_VARIATION_ID,
+            quantity: String(quantity),
+          }
+        ],
+        serviceCharges: [
+          {
+            name: '送料（全国一律）',
+            amountMoney: { amount: BigInt(SHIPPING_FEE_JPY), currency: 'JPY' },
+            calculationPhase: 'TOTAL_PHASE',
+          }
+        ],
+      }
+    });
 
-    console.log(`[${timestamp}][${requestId}] Processing payment — ¥${totalAmountJpy} for ${quantity}x ${productId}`);
+    const order = createOrderResponse.result.order;
+    const totalMoney = order.totalMoney;
 
-    // 3. Create payment via Square API
+    console.log(`[${timestamp}][${requestId}] Order created — ID: ${order.id}, Total: ¥${totalMoney.amount}`);
+
+    // 3. 注文に対して支払いを処理（カード決済）
     const paymentResponse = await squareClient.paymentsApi.createPayment({
       sourceId,
-      idempotencyKey: requestId, // Prevent duplicate charges
-      amountMoney,
+      idempotencyKey: requestId,
+      orderId: order.id,
+      amountMoney: totalMoney,
       locationId: process.env.SQUARE_LOCATION_ID,
-      note: `Coedo Music Shop — ${product.name} x${quantity}`,
+      note: `Coedo Music Shop — This is AI Sound x${quantity}`,
       buyerEmailAddress: customer.email,
       shippingAddress: {
         addressLine1: customer.address1,
@@ -101,7 +130,6 @@ router.post('/payment', async (req, res) => {
         country: 'JP'
       },
       referenceId: requestId,
-      // Statement descriptor visible on bank statement
       statementDescriptionIdentifier: 'COEDO MUSIC'
     });
 
@@ -116,23 +144,22 @@ router.post('/payment', async (req, res) => {
     }
 
     // 4. Success — log and respond
-    console.log(`[${timestamp}][${requestId}] ✅ Payment completed — ID: ${payment.id}`);
+    console.log(`[${timestamp}][${requestId}] Payment completed — ID: ${payment.id}, Order: ${order.id}`);
 
     return res.status(200).json({
       success: true,
       orderId: requestId,
+      squareOrderId: order.id,
       paymentId: payment.id,
-      amount: totalAmountJpy,
+      amount: Number(totalMoney.amount),
       message: 'ご購入ありがとうございます！'
     });
 
   } catch (err) {
     console.error(`[${timestamp}][${requestId}] Payment error:`, err?.errors || err.message);
 
-    // Square API errors
     if (err?.errors) {
       const squareError = err.errors[0];
-      // Map Square error codes to user-friendly messages
       const userMessages = {
         'CARD_DECLINED': 'カードが拒否されました。別のカードをお試しください。',
         'VERIFY_CVV_FAILURE': 'セキュリティコードが正しくありません。',
@@ -142,7 +169,6 @@ router.post('/payment', async (req, res) => {
         'INVALID_CARD': 'カード情報が無効です。',
         'PAYMENT_LIMIT_EXCEEDED': '決済限度額を超えています。'
       };
-
       const userMessage = userMessages[squareError.code] || '決済処理中にエラーが発生しました。';
       return res.status(402).json({ error: userMessage, code: squareError.code });
     }
@@ -152,7 +178,6 @@ router.post('/payment', async (req, res) => {
 });
 
 // ─── GET /api/config ─────────────────────────────────────────────────────────
-// Provides public Square credentials to frontend (safe to expose Application ID)
 router.get('/config', (req, res) => {
   if (!process.env.SQUARE_APPLICATION_ID || !process.env.SQUARE_LOCATION_ID) {
     return res.status(503).json({ error: 'Payment system not configured.' });

@@ -5,19 +5,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
 
 :root {
-  --bg-primary:    #08091a;
-  --bg-secondary:  #0d1030;
-  --bg-card:       rgba(18, 22, 60, 0.7);
-  --gold-primary:  #d4af37;
-  --gold-light:    #f0d060;
-  --gold-dark:     #a88a28;
-  --text-primary:  #f0f0f8;
-  --text-secondary:#9eaabe;
-  --text-muted:    #5a6580;
-  --border-color:  rgba(212, 175, 55, 0.25);
+  --bg-primary:    #FAF6EC;      /* 温かみのあるアイボリー（メイン背景） */
+  --bg-secondary:  #FAF7F2;      /* カードの中の淡い背景 */
+  --bg-card:       #FFFFFF;      /* クリーンな白（コンテンツカード背景） */
+  --gold-primary:  #3F9AB4;      /* ティールブルー（ジャケットの絵の青緑） */
+  --gold-light:    #4FADC5;      /* サブの明るいシアンブルー */
+  --gold-dark:     #244F5E;      /* 濃いネイビーティール */
+  --text-primary:  #1E3F4C;      /* 深みのある暗いティールブルー（見出し・本文） */
+  --text-secondary:#507887;      /* 中間色（サブテキスト・解説文など） */
+  --text-muted:    #87A2AD;      /* 薄めのカラー */
+  --border-color:  #E6DFD3;      /* ジャケットに合う優しいベージュ境界線 */
   --error-color:   #ff6b6b;
   --success-color: #4caf88;
-  --font-sans:     'Inter', 'Noto Sans JP', sans-serif;
+  --font-sans:     'Outfit', 'Noto Sans JP', sans-serif;
   --transition:    0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -32,8 +32,9 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   background-image:
-    radial-gradient(ellipse at 20% 10%, rgba(76, 29, 149, 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+    linear-gradient(rgba(63, 154, 180, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63, 154, 180, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
 a { color: var(--gold-primary); text-decoration: none; }
@@ -44,7 +45,7 @@ a { color: var(--gold-primary); text-decoration: none; }
 .checkout-header {
   padding: 20px 0;
   border-bottom: 1px solid var(--border-color);
-  background: rgba(8, 9, 26, 0.9);
+  background: rgba(250, 246, 236, 0.9);
   backdrop-filter: blur(20px);
   position: sticky;
   top: 0;
@@ -504,15 +505,15 @@ a { color: var(--gold-primary); text-decoration: none; }
 .alert.visible { display: flex; }
 
 .alert-error {
-  background: rgba(255, 107, 107, 0.1);
-  border: 1px solid rgba(255, 107, 107, 0.3);
-  color: #ff9f9f;
+  background: rgba(255, 107, 107, 0.08);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  color: #c62828;
 }
 
 .alert-success {
-  background: rgba(76, 175, 136, 0.1);
-  border: 1px solid rgba(76, 175, 136, 0.3);
-  color: #7ee8b8;
+  background: rgba(76, 175, 136, 0.08);
+  border: 1px solid rgba(76, 175, 136, 0.4);
+  color: #2e7d32;
 }
 
 .alert svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
@@ -533,4 +534,44 @@ a { color: var(--gold-primary); text-decoration: none; }
 @media (max-width: 480px) {
   .form-card { padding: 20px; }
   .order-summary { padding: 20px; }
+}
+
+/* ── Background Effects ──────────────────────────────────── */
+.bg-jacket {
+  position: fixed;
+  inset: 0;
+  background-image: url('/album_cover.png');
+  background-position: center 25%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.12;
+  filter: saturate(0.85) blur(2px);
+  z-index: -2;
+  pointer-events: none;
+}
+
+.bg-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: -1;
+  animation: floatGlow 15s ease-in-out infinite alternate;
+}
+.glow-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(63, 154, 180, 0.06) 0%, transparent 70%);
+  top: -200px; left: -200px;
+  animation-delay: 0s;
+}
+.glow-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(228, 220, 205, 0.4) 0%, transparent 70%);
+  bottom: -150px; right: -100px;
+  animation-delay: -4s;
+}
+
+@keyframes floatGlow {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, 40px) scale(1.1); }
 }

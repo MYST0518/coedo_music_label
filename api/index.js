@@ -130,12 +130,17 @@ const paymentLimiter = rateLimit({
 
 app.use(globalLimiter);
 app.use('/api/payment', paymentLimiter);
+app.use('/payment', paymentLimiter);
 
 // ─── API Routes ──────────────────────────────────────────────────────────────
 app.use('/api', paymentRouter);
+app.use('/', paymentRouter);
 
 // ─── Health Check ────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', environment: process.env.SQUARE_ENVIRONMENT || 'sandbox' });
+});
+app.get('/health', (req, res) => {
   res.json({ status: 'ok', environment: process.env.SQUARE_ENVIRONMENT || 'sandbox' });
 });
 

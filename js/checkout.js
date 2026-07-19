@@ -199,23 +199,6 @@ async function initSquare() {
   } catch (e) {
     // Apple Pay not available — silently skip
   }
-
-  // ── Google Pay ────────────────────────────────────────
-  try {
-    const qty = loadCart();
-    const total = PRICE * qty + SHIPPING;
-    const paymentRequest = squarePayments.paymentRequest({
-      countryCode: 'JP',
-      currencyCode: 'JPY',
-      total: { label: 'Coedo Music Labo', amount: String(total) }
-    });
-
-    const googlePay = await squarePayments.googlePay(paymentRequest);
-    await googlePay.attach('#google-pay-button');
-    document.getElementById('wallet-section').style.display = 'block';
-  } catch (e) {
-    // Google Pay not available — silently skip
-  }
 }
 
 // ─── Tokenize & Submit ───────────────────────────────────────────────────────

@@ -311,8 +311,14 @@ function initCoupon() {
   }
 
   applyBtn.addEventListener('click', () => {
-    const code = inputEl.value.trim().toUpperCase();
+    const rawVal = inputEl.value.trim();
+    // 全角英数字を半角英数字に変換
+    const code = rawVal.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => {
+      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    }).toUpperCase();
+
     console.log('Coupon click code:', code);
+
     if (!code) {
       msgEl.style.display = 'block';
       msgEl.style.color = '#ff6b6b';
@@ -330,7 +336,8 @@ function initCoupon() {
       msgEl.textContent = '1,000円引きクーポンが適用されました！';
       applyBtn.disabled = true;
       inputEl.disabled = true;
-      console.log('Coupon success applied!');
+      
+      alert('【適用完了】\nクーポン「COEDO9824」（1,000円引き）が適用されました！');
     } else {
       couponApplied = false;
       appliedCouponCode = '';
@@ -339,7 +346,8 @@ function initCoupon() {
       msgEl.style.display = 'block';
       msgEl.style.color = '#ff6b6b';
       msgEl.textContent = '無効なクーポンコードです。';
-      console.log('Coupon invalid.');
+      
+      alert('【エラー】\n入力されたコード「' + rawVal + '」は無効なクーポンです。');
     }
   });
 }

@@ -165,6 +165,28 @@
       color: var(--gold-primary);
     }
 
+    .btn-receipt {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      background: #FFFFFF;
+      border: 2px solid #4caf88;
+      color: #4caf88;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-receipt:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(76, 175, 136, 0.2);
+      background: #4caf88;
+      color: #fff;
+    }
+
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -231,8 +253,26 @@
         const params = new URLSearchParams(window.location.search);
         const orderId = params.get('order');
         const el = document.getElementById('order-id-display');
-        if (el && orderId && /^[a-f0-9\-]{36}$/.test(orderId)) {
+        if (el && orderId) {
           el.textContent = `注文番号: ${orderId}`;
+        }
+      } catch (e) {}
+
+      // レシート表示ボタンの動的追加
+      try {
+        const receiptUrl = sessionStorage.getItem('coedo_receipt_url');
+        if (receiptUrl) {
+          const container = document.querySelector('.success-actions');
+          if (container) {
+            const btn = document.createElement('a');
+            btn.href = receiptUrl;
+            btn.target = '_blank';
+            btn.rel = 'noopener';
+            btn.className = 'btn-receipt';
+            btn.style.marginBottom = '8px';
+            btn.innerHTML = '💳 領収書を表示する（Square公式）';
+            container.insertBefore(btn, container.firstChild);
+          }
         }
       } catch (e) {}
     })();

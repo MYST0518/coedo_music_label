@@ -92,6 +92,8 @@ const TRACKS = [
 const PRICE = 2500;
 const SHIPPING = 300;
 let quantity = 1;
+let currentStock = 30;  // リアルタイム在庫（APIから更新）
+let totalStock = 30;    // 限定枚数（APIから更新）
 
 // ─── Render Tracks ───────────────────────────────────────────────────────────
 function renderTracks() {
@@ -127,20 +129,68 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+// ─── Inventory Display ───────────────────────────────────────────────────────
+async function fetchInventory() {
+  try {
+    const res = await fetch('/api/inventory');
+    if (!res.ok) return;
+    const data = await res.json();
+    currentStock = data.count;
+    totalStock   = data.total || 30;
+
+    // 残り枚数テキストを更新
+    const countEl = document.getElementById('stock-count');
+    if (countEl) {
+      countEl.innerHTML = `${totalStock}枚中 <strong>${currentStock}</strong> 枚残り`;
+    }
+
+    // バッジ更新
+    const badgeEl = document.querySelector('.limited-badge');
+    if (badgeEl) {
+      badgeEl.textContent = `限定 ${totalStock}枚`;
+    }
+
+    // ストックバーを更新
+    const barEl = document.getElementById('stock-bar');
+    if (barEl) {
+      const pct = totalStock > 0 ? (currentStock / totalStock) * 100 : 0;
+      barEl.style.width = `${pct}%`;
+    }
+
+    // 在庫に応じて数量の上限を更新
+    updateQty(quantity);
+  } catch (e) {
+    console.warn('Inventory fetch failed:', e);
+  }
+}
+
 // ─── Quantity Controls ────────────────────────────────────────────────────────
 function updateQty(newQty) {
-  quantity = Math.max(1, Math.min(5, newQty));
+  const maxQty = Math.min(5, currentStock);
+  quantity = Math.max(1, Math.min(maxQty, newQty));
   const display = document.getElementById('qty-display');
   const minus   = document.getElementById('qty-minus');
   const plus    = document.getElementById('qty-plus');
   const subtotal = document.getElementById('qty-subtotal');
+  const buyBtn   = document.getElementById('btn-buy');
 
   if (display) display.textContent = quantity;
   if (minus)   minus.disabled = quantity <= 1;
-  if (plus)    plus.disabled  = quantity >= 5;
+  if (plus)    plus.disabled  = quantity >= maxQty;
   if (subtotal) {
     const total = PRICE * quantity + SHIPPING;
     subtotal.textContent = `小計 ¥${total.toLocaleString('ja-JP')}（送料込）`;
+  }
+
+  // 売り切れ時はボタンを無効化
+  if (buyBtn) {
+    if (currentStock <= 0) {
+      buyBtn.disabled = true;
+      buyBtn.textContent = '売り切れ';
+    } else {
+      buyBtn.disabled = false;
+      buyBtn.innerHTML = '🛒 購入手続きへ進む';
+    }
   }
 }
 
@@ -182,6 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTracks();
   updateQty(1);
   setupAnimations();
+  fetchInventory(); // Square からリアルタイム在庫を取得
 
   document.getElementById('qty-minus')?.addEventListener('click', () => updateQty(quantity - 1));
   document.getElementById('qty-plus')?.addEventListener('click',  () => updateQty(quantity + 1));

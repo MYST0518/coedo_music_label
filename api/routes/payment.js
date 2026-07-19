@@ -36,7 +36,7 @@ const orderSchema = Joi.object({
   quantity: Joi.number()
     .integer()
     .min(1)
-    .max(5)
+    .max(20)
     .required(),
   customer: Joi.object({
     name: Joi.string().min(1).max(100).required(),
@@ -91,9 +91,10 @@ router.post('/payment', async (req, res) => {
     const discounts = [];
     const isValidCoupon = couponCode && couponCode.trim().toUpperCase() === 'COEDO9824';
     if (isValidCoupon) {
+      const discountAmount = 1000n * BigInt(quantity);
       discounts.push({
         name: 'クーポン割引 (COEDO9824)',
-        amountMoney: { amount: 1000n, currency: 'JPY' }
+        amountMoney: { amount: discountAmount, currency: 'JPY' }
       });
     }
 

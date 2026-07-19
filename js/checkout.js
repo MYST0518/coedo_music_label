@@ -300,14 +300,19 @@ async function submitPayment(sourceId) {
 
 // ─── Coupon Code Logic ────────────────────────────────────────────────────────
 function initCoupon() {
+  console.log('initCoupon initialized');
   const applyBtn = document.getElementById('coupon-apply-btn');
   const inputEl  = document.getElementById('coupon-input');
   const msgEl    = document.getElementById('coupon-message');
 
-  if (!applyBtn || !inputEl || !msgEl) return;
+  if (!applyBtn || !inputEl || !msgEl) {
+    console.warn('Coupon elements not found:', { applyBtn, inputEl, msgEl });
+    return;
+  }
 
   applyBtn.addEventListener('click', () => {
     const code = inputEl.value.trim().toUpperCase();
+    console.log('Coupon click code:', code);
     if (!code) {
       msgEl.style.display = 'block';
       msgEl.style.color = '#ff6b6b';
@@ -325,6 +330,7 @@ function initCoupon() {
       msgEl.textContent = '1,000円引きクーポンが適用されました！';
       applyBtn.disabled = true;
       inputEl.disabled = true;
+      console.log('Coupon success applied!');
     } else {
       couponApplied = false;
       appliedCouponCode = '';
@@ -333,6 +339,7 @@ function initCoupon() {
       msgEl.style.display = 'block';
       msgEl.style.color = '#ff6b6b';
       msgEl.textContent = '無効なクーポンコードです。';
+      console.log('Coupon invalid.');
     }
   });
 }
@@ -365,11 +372,17 @@ function addRealTimeValidation() {
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
+async function startInit() {
   loadCart();
   addRealTimeValidation();
   initCoupon(); // Initialize coupon events
   await initSquare();
 
   document.getElementById('btn-pay')?.addEventListener('click', handleCardSubmit);
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', startInit);
+} else {
+  startInit();
+}

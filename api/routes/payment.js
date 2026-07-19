@@ -120,7 +120,27 @@ router.post('/payment', async (req, res) => {
             calculationPhase: 'TOTAL_PHASE',
           }
         ],
-        discounts: discounts.length > 0 ? discounts : undefined
+        discounts: discounts.length > 0 ? discounts : undefined,
+        fulfillments: [
+          {
+            type: 'SHIPMENT',
+            state: 'PROPOSED',
+            shipmentDetails: {
+              recipient: {
+                displayName: customer.name,
+                emailAddress: customer.email,
+                phoneNumber: customer.phone,
+                address: {
+                  addressLine1: customer.address1,
+                  addressLine2: customer.address2 || undefined,
+                  locality: customer.prefecture,
+                  postalCode: customer.postalCode.replace('-', ''),
+                  country: 'JP'
+                }
+              }
+            }
+          }
+        ]
       }
     });
 

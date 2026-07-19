@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ご購入完了 — Coedo Music Labo Shop</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/album_cover.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .success-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, rgba(76, 175, 136, 0.2), rgba(76, 175, 136, 0.1));
+      border: 2px solid rgba(76, 175, 136, 0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 28px;
+      animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .success-title {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 900;
+      background: linear-gradient(135deg, #4caf88, #81d4b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+      animation: fadeInUp 0.6s ease 0.2s both;
+    }
+
+    .success-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      animation: fadeInUp 0.6s ease 0.3s both;
+    }
+
+    .success-order-id {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      animation: fadeInUp 0.6s ease 0.35s both;
+    }
+
+    .success-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(76, 175, 136, 0.3);
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 520px;
+      width: 100%;
+      text-align: left;
+      backdrop-filter: blur(20px);
+      margin-bottom: 32px;
+      animation: fadeInUp 0.6s ease 0.4s both;
+    }
+
+    .success-card-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: rgba(76, 175, 136, 0.9);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .success-steps {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .success-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .step-num {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold-primary);
+      flex-shrink: 0;
+    }
+
+    .step-text {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .step-text strong { color: var(--text-primary); }
+
+    .success-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 320px;
+      width: 100%;
+      animation: fadeInUp 0.6s ease 0.5s both;
+    }
+
+    .btn-home {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-primary));
+      color: #1a1000;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-home:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.35);
+      color: #1a1000;
+    }
+
+    .btn-secondary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 28px;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gold-primary);
+      color: var(--gold-primary);
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="success-page">
+    <div class="success-icon">🎉</div>
+
+    <h1 class="success-title">ご購入ありがとうございます！</h1>
+    <p class="success-subtitle">ご注文が正常に完了しました。</p>
+    <p class="success-order-id" id="order-id-display"></p>
+
+    <div class="success-card">
+      <div class="success-card-title">📦 次のステップ</div>
+      <ul class="success-steps">
+        <li class="success-step">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <strong>注文確認メール</strong>をご登録のメールアドレスへお送りします。
+          </div>
+        </li>
+        <li class="success-step">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <strong>2026年8月10日</strong>の発売日以降に順次発送いたします。
+          </div>
+        </li>
+        <li class="success-step">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            CDには<strong>ネット試聴プレイヤーリンク</strong>が同梱されます。CDプレーヤーがなくても楽しめます。
+          </div>
+        </li>
+        <li class="success-step">
+          <div class="step-num">4</div>
+          <div class="step-text">
+            ご不明点は <a href="https://coedo-music.jp/" target="_blank" rel="noopener" style="color:var(--gold-primary);">公式サイト</a> よりお問い合わせください。
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="success-actions">
+      <a href="/" class="btn-home">🏠 ショップトップへ戻る</a>
+      <a href="https://coedo-music.jp/pr/index.html" target="_blank" rel="noopener" class="btn-secondary">
+        プレスリリースを見る →
+      </a>
+    </div>
+  </main>
+
+  <script>
+    // Show order ID from URL params (safe — using textContent)
+    (function() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get('order');
+        const el = document.getElementById('order-id-display');
+        if (el && orderId && /^[a-f0-9\-]{36}$/.test(orderId)) {
+          el.textContent = `注文番号: ${orderId}`;
+        }
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>

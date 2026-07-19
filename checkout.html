@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ご購入手続き — Coedo Music Labo Shop</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/album_cover.png">
+  <link rel="stylesheet" href="/css/checkout.css">
+
+  <!-- Square Web Payments SDK (Production) -->
+  <script src="https://web.squarecdn.com/v1/square.js"></script>
+</head>
+<body>
+
+  <!-- ── Header ──────────────────────────────────────────── -->
+  <header class="checkout-header">
+    <div class="container checkout-header-inner">
+      <div class="checkout-logo">
+        <div class="checkout-logo-icon">🎵</div>
+        Coedo Music Labo — お支払い
+      </div>
+      <a href="/" class="back-link">
+        ← 商品ページへ戻る
+      </a>
+    </div>
+  </header>
+
+  <!-- ── Progress ─────────────────────────────────────────── -->
+  <div class="checkout-progress">
+    <div class="container">
+      <div class="progress-steps">
+        <div class="step done">
+          <div class="step-circle">✓</div>
+          <span>カート</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step active">
+          <div class="step-circle">2</div>
+          <span>お届け先・お支払い</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+          <div class="step-circle">3</div>
+          <span>完了</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main ─────────────────────────────────────────────── -->
+  <main class="checkout-main">
+    <div class="container">
+      <div class="checkout-grid">
+
+        <!-- ── Left: Forms ─────────────────────────────── -->
+        <div>
+          <!-- Shipping Form -->
+          <div class="form-card" style="margin-bottom:20px;">
+            <h2 class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              お届け先情報
+            </h2>
+
+            <form id="shipping-form" novalidate>
+              <div class="form-group">
+                <label class="form-label" for="name">
+                  お名前 <span class="required">*</span>
+                </label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="山田 太郎"
+                  autocomplete="name"
+                  maxlength="100"
+                  required
+                >
+                <div class="form-error" id="name-error">お名前を入力してください</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="email">
+                  メールアドレス <span class="required">*</span>
+                </label>
+                <input
+                  class="form-input"
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="example@email.com"
+                  autocomplete="email"
+                  maxlength="200"
+                  required
+                >
+                <div class="form-error" id="email-error">有効なメールアドレスを入力してください</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="phone">
+                  電話番号 <span class="required">*</span>
+                </label>
+                <input
+                  class="form-input"
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  placeholder="090-1234-5678"
+                  autocomplete="tel"
+                  maxlength="20"
+                  required
+                >
+                <div class="form-error" id="phone-error">電話番号を入力してください（例: 090-1234-5678）</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="postal-code">
+                  郵便番号 <span class="required">*</span>
+                </label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="postal-code"
+                  name="postalCode"
+                  placeholder="123-4567"
+                  autocomplete="postal-code"
+                  maxlength="8"
+                  pattern="[0-9]{3}-?[0-9]{4}"
+                  required
+                  style="max-width: 160px;"
+                >
+                <div class="form-error" id="postal-code-error">7桁の郵便番号を入力してください</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="prefecture">
+                  都道府県 <span class="required">*</span>
+                </label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="prefecture"
+                  name="prefecture"
+                  placeholder="東京都"
+                  autocomplete="address-level1"
+                  maxlength="10"
+                  required
+                  style="max-width: 160px;"
+                >
+                <div class="form-error" id="prefecture-error">都道府県を入力してください</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="address1">
+                  市区町村・番地 <span class="required">*</span>
+                </label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="address1"
+                  name="address1"
+                  placeholder="小江戸市AI町1-2-3"
+                  autocomplete="address-line1"
+                  maxlength="100"
+                  required
+                >
+                <div class="form-error" id="address1-error">住所を入力してください</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="address2">
+                  建物名・部屋番号（任意）
+                </label>
+                <input
+                  class="form-input"
+                  type="text"
+                  id="address2"
+                  name="address2"
+                  placeholder="コエドマンション 101号室"
+                  autocomplete="address-line2"
+                  maxlength="100"
+                >
+              </div>
+            </form>
+          </div>
+
+          <!-- Payment Form -->
+          <div class="form-card">
+            <h2 class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              お支払い方法
+            </h2>
+
+            <!-- Digital Wallets (auto-shown if supported) -->
+            <div id="wallet-section" style="display:none;">
+              <div id="apple-pay-button"></div>
+              <div id="google-pay-button"></div>
+              <div class="wallet-divider">または、カードでお支払い</div>
+            </div>
+
+            <div class="square-card-section">
+              <label class="form-label">
+                クレジット / デビットカード <span class="required">*</span>
+              </label>
+              <div id="card-container"></div>
+              <div class="card-icons">
+                <span class="card-icon-label">対応カード：</span>
+                <span class="card-icon">VISA</span>
+                <span class="card-icon">Mastercard</span>
+                <span class="card-icon">AMEX</span>
+                <span class="card-icon">JCB</span>
+              </div>
+              <div class="secure-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Square社のセキュアなiframeで処理されます。カード情報は当サイトのサーバーを経由しません。
+              </div>
+            </div>
+
+            <!-- Error/Status Message -->
+            <div class="alert alert-error" id="payment-error" role="alert" aria-live="assertive">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span id="payment-error-text"></span>
+            </div>
+
+            <!-- Submit -->
+            <button class="btn-pay" id="btn-pay" aria-label="注文を確定して支払いを完了する">
+              <span class="btn-pay-text">
+                <span id="pay-btn-label">注文を確定する</span>
+              </span>
+              <div class="spinner"></div>
+            </button>
+
+            <p style="font-size:0.72rem;color:var(--text-muted);text-align:center;margin-top:12px;line-height:1.6;">
+              「注文を確定する」ボタンを押すことで、<br>
+              <a href="https://squareup.com/jp/legal/general/ua" target="_blank" rel="noopener" style="color:var(--gold-dark);">Squareの利用規約</a>および当店の販売条件に同意したものとみなされます。
+            </p>
+          </div>
+        </div>
+
+        <!-- ── Right: Order Summary ──────────────────── -->
+        <aside>
+          <div class="order-summary">
+            <div class="order-summary-title">ご注文内容</div>
+
+            <div class="order-item">
+              <img
+                class="order-item-img"
+                src="/album_cover.png"
+                alt="This is AI Sound"
+                onerror="this.src='/album_cover.png'"
+              >
+              <div class="order-item-info">
+                <div class="order-item-name">This is AI Sound</div>
+                <div class="order-item-artist">Coedo Music Labo</div>
+                <div class="order-item-qty">数量: <span id="summary-qty">1</span></div>
+              </div>
+              <div class="order-item-price" id="summary-item-price">¥2,500</div>
+            </div>
+
+            <hr class="order-line">
+
+            <div class="order-row">
+              <span class="label">商品小計</span>
+              <span class="value" id="summary-subtotal">¥2,500</span>
+            </div>
+            <div class="order-row">
+              <span class="label">送料（全国一律）</span>
+              <span class="value">¥300</span>
+            </div>
+
+            <div class="order-row total">
+              <span class="label">合計（税込）</span>
+              <span class="value" id="summary-total">¥2,800</span>
+            </div>
+
+            <div class="order-guarantee">
+              <span class="order-guarantee-icon">🔒</span>
+              <span>Square社の決済システムを使用しています。カード情報はPCI DSSに準拠した環境で安全に処理されます。</span>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/checkout.js"></script>
+</body>
+</html>

@@ -9,29 +9,29 @@
 /* ── CSS Custom Properties ────────────────────────────────── */
 :root {
   /* Colors */
-  --bg-primary:    #08091a;
-  --bg-secondary:  #0d1030;
-  --bg-card:       rgba(18, 22, 60, 0.7);
-  --bg-card-hover: rgba(22, 28, 75, 0.85);
-  --gold-primary:  #d4af37;
-  --gold-light:    #f0d060;
-  --gold-dark:     #a88a28;
-  --accent-blue:   #4fc3f7;
-  --accent-purple: #9c27b0;
-  --text-primary:  #f0f0f8;
-  --text-secondary:#9eaabe;
-  --text-muted:    #5a6580;
-  --border-color:  rgba(212, 175, 55, 0.25);
-  --border-glow:   rgba(212, 175, 55, 0.6);
+  --bg-primary:    #FAF6EC;      /* 温かみのあるアイボリー（メイン背景） */
+  --bg-secondary:  #FAF7F2;      /* カードの中の淡い背景 */
+  --bg-card:       #FFFFFF;      /* クリーンな白（コンテンツカード背景） */
+  --bg-card-hover: #F6F1E5;      /* カードホバー時のトーン */
+  --gold-primary:  #3F9AB4;      /* ティールブルー（ジャケットの絵の青緑） */
+  --gold-light:    #4FADC5;      /* サブの明るいシアンブルー */
+  --gold-dark:     #244F5E;      /* 濃いネイビーティール */
+  --accent-blue:   #3F9AB4;
+  --accent-purple: #4FADC5;
+  --text-primary:  #1E3F4C;      /* 深みのある暗いティールブルー（見出し・本文） */
+  --text-secondary:#507887;      /* 中間色（サブテキスト・解説文など） */
+  --text-muted:    #87A2AD;      /* 薄めのカラー */
+  --border-color:  #E6DFD3;      /* ジャケットに合う優しいベージュ境界線 */
+  --border-glow:   rgba(63, 154, 180, 0.4);
   --error-color:   #ff6b6b;
   --success-color: #4caf88;
 
   /* Typography */
-  --font-sans:     'Inter', 'Noto Sans JP', sans-serif;
+  --font-sans:     'Outfit', 'Noto Sans JP', sans-serif;
 
   /* Spacing */
   --section-gap:   80px;
-  --card-radius:   16px;
+  --card-radius:   24px;
   --btn-radius:    50px;
 
   /* Transitions */
@@ -57,11 +57,11 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
-  /* Animated gradient background */
+  /* Animated gradient & grid background */
   background-image:
-    radial-gradient(ellipse at 20% 10%, rgba(76, 29, 149, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(13, 16, 48, 0.9) 0%, transparent 100%);
+    linear-gradient(rgba(63, 154, 180, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63, 154, 180, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
 a { color: var(--gold-primary); text-decoration: none; }
@@ -88,7 +88,7 @@ img { max-width: 100%; display: block; }
   right: 0;
   z-index: 100;
   padding: 16px 0;
-  background: rgba(8, 9, 26, 0.85);
+  background: rgba(250, 246, 236, 0.85);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-color);
   transition: var(--transition);
@@ -705,14 +705,14 @@ img { max-width: 100%; display: block; }
 
 .stock-bar {
   height: 4px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(30, 63, 76, 0.08);
   border-radius: 2px;
   overflow: hidden;
 }
 
 .stock-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--gold-dark), var(--gold-primary));
+  background: linear-gradient(90deg, var(--gold-light), var(--gold-primary));
   border-radius: 2px;
   transition: width 1s ease;
 }
@@ -721,4 +721,44 @@ img { max-width: 100%; display: block; }
 @media (max-width: 480px) {
   .album-card { padding: 24px; }
   .btn-primary { max-width: 100%; }
+}
+
+/* ── Background Effects ──────────────────────────────────── */
+.bg-jacket {
+  position: fixed;
+  inset: 0;
+  background-image: url('/album_cover.png');
+  background-position: center 25%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.12;
+  filter: saturate(0.85) blur(2px);
+  z-index: -2;
+  pointer-events: none;
+}
+
+.bg-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: -1;
+  animation: floatGlow 15s ease-in-out infinite alternate;
+}
+.glow-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(63, 154, 180, 0.06) 0%, transparent 70%);
+  top: -200px; left: -200px;
+  animation-delay: 0s;
+}
+.glow-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(228, 220, 205, 0.4) 0%, transparent 70%);
+  bottom: -150px; right: -100px;
+  animation-delay: -4s;
+}
+
+@keyframes floatGlow {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, 40px) scale(1.1); }
 }

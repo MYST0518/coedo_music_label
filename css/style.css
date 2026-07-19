@@ -587,27 +587,28 @@ img { max-width: 100%; display: block; }
 }
 
 .about-card:hover {
-  border-color: var(--border-glow);
+  border-color: var(--gold-primary);
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 12px 30px rgba(30, 63, 76, 0.08);
 }
 
 .about-icon {
-  font-size: 2rem;
+  font-size: 2.2rem;
   margin-bottom: 14px;
+  filter: drop-shadow(0 4px 8px rgba(63, 154, 180, 0.15));
 }
 
 .about-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--gold-light);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--gold-dark);  /* Dark navy teal for contrast */
   margin-bottom: 8px;
 }
 
 .about-text {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  line-height: 1.65;
+  font-size: 0.88rem;
+  color: var(--text-primary); /* Use primary dark text for better readability */
+  line-height: 1.7;
 }
 
 /* ── Footer ───────────────────────────────────────────────── */
@@ -663,9 +664,9 @@ img { max-width: 100%; display: block; }
 
 /* ── Event Info Banner ────────────────────────────────────── */
 .event-banner {
-  background: linear-gradient(135deg, rgba(156, 39, 176, 0.2), rgba(212, 175, 55, 0.15));
-  border: 1px solid rgba(156, 39, 176, 0.4);
-  border-radius: 12px;
+  background: rgba(63, 154, 180, 0.06);
+  border: 1px solid rgba(63, 154, 180, 0.2);
+  border-radius: 16px;
   padding: 20px 24px;
   margin-bottom: 32px;
   display: flex;
@@ -674,20 +675,20 @@ img { max-width: 100%; display: block; }
   flex-wrap: wrap;
 }
 
-.event-banner-icon { font-size: 1.5rem; }
+.event-banner-icon { font-size: 1.6rem; }
 
 .event-banner-text { flex: 1; min-width: 0; }
 
 .event-banner-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--gold-light);
-  margin-bottom: 2px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--gold-dark);
+  margin-bottom: 4px;
 }
 
 .event-banner-desc {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
+  font-size: 0.82rem;
+  color: var(--text-primary);
 }
 
 /* ── Stock Counter ────────────────────────────────────────── */

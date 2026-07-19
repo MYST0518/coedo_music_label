@@ -290,7 +290,12 @@ async function submitPayment(sourceId) {
 
     if (res.ok && data.success) {
       // Success — clear cart and redirect
-      try { sessionStorage.removeItem('coedo_cart'); } catch (e) {}
+      try { 
+        sessionStorage.removeItem('coedo_cart'); 
+        if (data.receiptUrl) {
+          sessionStorage.setItem('coedo_receipt_url', data.receiptUrl);
+        }
+      } catch (e) {}
       window.location.href = `/success?order=${encodeURIComponent(data.orderId)}`;
     } else {
       showError(data.error || '決済処理に失敗しました。');

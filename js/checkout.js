@@ -55,7 +55,8 @@ function loadCart() {
   } catch (e) { /* ignore */ }
 
   const itemTotal = PRICE * qty;
-  const grandTotal = itemTotal + SHIPPING;
+  const discount  = couponApplied ? 1000 : 0;
+  const grandTotal = Math.max(0, itemTotal - discount) + SHIPPING;
 
   // Update summary UI
   const setEl = (id, val) => {
@@ -65,6 +66,14 @@ function loadCart() {
   setEl('summary-qty',         qty);
   setEl('summary-item-price',  formatJPY(itemTotal));
   setEl('summary-subtotal',    formatJPY(itemTotal));
+
+  // Toggle Discount UI
+  const discountRow = document.getElementById('coupon-discount-row');
+  if (discountRow) {
+    discountRow.style.display = couponApplied ? 'flex' : 'none';
+    setEl('summary-discount', `-${formatJPY(discount)}`);
+  }
+
   setEl('summary-total',       formatJPY(grandTotal));
   setEl('pay-btn-label', `注文を確定する（${formatJPY(grandTotal)}）`);
 
@@ -262,7 +271,8 @@ async function submitPayment(sourceId) {
         sourceId,
         productId: 'this-is-ai-sound',
         quantity:  qty,
-        customer
+        customer,
+        couponCode: couponApplied ? appliedCouponCode : undefined
       }),
       // Abort if too slow
       signal: AbortSignal.timeout ? AbortSignal.timeout(30000) : undefined
@@ -286,6 +296,45 @@ async function submitPayment(sourceId) {
     }
     setLoading(false);
   }
+}
+
+// ─── Coupon Code Logic ────────────────────────────────────────────────────────
+function initCoupon() {
+  const applyBtn = document.getElementById('coupon-apply-btn');
+  const inputEl  = document.getElementById('coupon-input');
+  const msgEl    = document.getElementById('coupon-message');
+
+  if (!applyBtn || !inputEl || !msgEl) return;
+
+  applyBtn.addEventListener('click', () => {
+    const code = inputEl.value.trim().toUpperCase();
+    if (!code) {
+      msgEl.style.display = 'block';
+      msgEl.style.color = '#ff6b6b';
+      msgEl.textContent = 'クーポンコードを入力してください。';
+      return;
+    }
+
+    if (code === 'COEDO9824') {
+      couponApplied = true;
+      appliedCouponCode = 'COEDO9824';
+      loadCart(); // Recalculate totals
+
+      msgEl.style.display = 'block';
+      msgEl.style.color = 'var(--success-color)';
+      msgEl.textContent = '1,000円引きクーポンが適用されました！';
+      applyBtn.disabled = true;
+      inputEl.disabled = true;
+    } else {
+      couponApplied = false;
+      appliedCouponCode = '';
+      loadCart();
+
+      msgEl.style.display = 'block';
+      msgEl.style.color = '#ff6b6b';
+      msgEl.textContent = '無効なクーポンコードです。';
+    }
+  });
 }
 
 // ─── Real-time Validation ────────────────────────────────────────────────────
@@ -319,6 +368,7 @@ function addRealTimeValidation() {
 document.addEventListener('DOMContentLoaded', async () => {
   loadCart();
   addRealTimeValidation();
+  initCoupon(); // Initialize coupon events
   await initSquare();
 
   document.getElementById('btn-pay')?.addEventListener('click', handleCardSubmit);

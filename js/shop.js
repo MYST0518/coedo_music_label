@@ -92,8 +92,8 @@ const TRACKS = [
 const PRICE = 2500;
 const SHIPPING = 300;
 let quantity = 1;
-let currentStock = 30;  // リアルタイム在庫（APIから更新）
-let totalStock = 30;    // 限定枚数（APIから更新）
+let currentStock = 100;  // リアルタイム在庫（APIから更新）
+let totalStock = 100;    // 限定枚数（APIから更新）
 
 // ─── Render Tracks ───────────────────────────────────────────────────────────
 function renderTracks() {

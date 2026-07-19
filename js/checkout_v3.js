@@ -9,6 +9,10 @@ let squarePayments = null;
 let cardWidget     = null;
 let isSubmitting   = false;
 
+// Bind to window for HTML inline script integration
+window.couponApplied = window.couponApplied || false;
+window.appliedCouponCode = window.appliedCouponCode || '';
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function escapeHtml(str) {
   const d = document.createElement('div');
@@ -55,7 +59,7 @@ function loadCart() {
   } catch (e) { /* ignore */ }
 
   const itemTotal = PRICE * qty;
-  const discount  = couponApplied ? 1000 : 0;
+  const discount  = window.couponApplied ? 1000 : 0;
   const grandTotal = Math.max(0, itemTotal - discount) + SHIPPING;
 
   // Update summary UI
@@ -70,13 +74,14 @@ function loadCart() {
   // Toggle Discount UI
   const discountRow = document.getElementById('coupon-discount-row');
   if (discountRow) {
-    discountRow.style.display = couponApplied ? 'flex' : 'none';
+    discountRow.style.display = window.couponApplied ? 'flex' : 'none';
     setEl('summary-discount', `-${formatJPY(discount)}`);
   }
 
   setEl('summary-total',       formatJPY(grandTotal));
   setEl('pay-btn-label', `注文を確定する（${formatJPY(grandTotal)}）`);
 
+  window.loadCart = loadCart; // Expose globally
   return qty;
 }
 
@@ -272,7 +277,7 @@ async function submitPayment(sourceId) {
         productId: 'this-is-ai-sound',
         quantity:  qty,
         customer,
-        couponCode: couponApplied ? appliedCouponCode : undefined
+        couponCode: window.couponApplied ? window.appliedCouponCode : undefined
       }),
       // Abort if too slow
       signal: AbortSignal.timeout ? AbortSignal.timeout(30000) : undefined

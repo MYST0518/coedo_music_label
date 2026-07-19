@@ -58,7 +58,7 @@
       <div class="checkout-grid">
 
         <!-- ── Left: Forms ─────────────────────────────── -->
-        <div>
+        <div class="checkout-section-shipping">
           <!-- Shipping Form -->
           <div class="form-card" style="margin-bottom:20px;">
             <h2 class="form-section-title">
@@ -188,8 +188,10 @@
               </div>
             </form>
           </div>
+        </div>
 
-          <!-- Payment Form -->
+        <!-- 3. お支払い方法 -->
+        <div class="checkout-section-payment">
           <div class="form-card">
             <h2 class="form-section-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
@@ -256,8 +258,8 @@
           </div>
         </div>
 
-        <!-- ── Right: Order Summary ──────────────────── -->
-        <aside>
+        <!-- 2. ご注文内容 -->
+        <aside class="checkout-section-summary">
           <div class="order-summary">
             <div class="order-summary-title">ご注文内容</div>
 
@@ -402,6 +404,6 @@
       }
     })();
   </script>
-  <script src="/js/checkout_v3.js?v=4"></script>
+  <script src="/js/checkout_v3.js?v=5"></script>
 </body>
 </html>

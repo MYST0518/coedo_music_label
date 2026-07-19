@@ -171,8 +171,8 @@ async function initSquare() {
   }
 
   // ── Credit Card widget ────────────────────────────────
-  try {
     cardWidget = await squarePayments.card({
+      postalCode: false,
       style: {
         '.input-container': {
           borderRadius: '0',

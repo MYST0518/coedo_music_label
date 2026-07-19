@@ -50,16 +50,19 @@ function setLoading(loading) {
 // ─── Load Cart from sessionStorage ───────────────────────────────────────────
 function loadCart() {
   let qty = 1;
+  let productId = '';
   try {
     const raw = sessionStorage.getItem('coedo_cart');
     if (raw) {
       const cart = JSON.parse(raw);
       qty = Math.max(1, Math.min(20, parseInt(cart.quantity) || 1));
+      productId = cart.productId;
     }
   } catch (e) { /* ignore */ }
 
+  const isEligible = productId === 'this-is-ai-sound';
   const itemTotal = PRICE * qty;
-  const discount  = window.couponApplied ? (1000 * qty) : 0;
+  const discount  = (window.couponApplied && isEligible) ? (1000 * qty) : 0;
   const grandTotal = Math.max(0, itemTotal - discount) + SHIPPING;
 
   // Update summary UI

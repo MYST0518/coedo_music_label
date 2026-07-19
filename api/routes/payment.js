@@ -158,6 +158,7 @@ router.post('/payment', async (req, res) => {
       locationId: process.env.SQUARE_LOCATION_ID,
       note: `Coedo Music Shop — This is AI Sound x${quantity}`,
       buyerEmailAddress: customer.email,
+      receiptEmailAddress: customer.email, // ← Squareからの公式確認レシートメールを送信する
       shippingAddress: {
         addressLine1: customer.address1,
         addressLine2: customer.address2 || undefined,

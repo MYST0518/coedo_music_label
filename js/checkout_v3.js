@@ -308,56 +308,7 @@ async function submitPayment(sourceId) {
 
 // ─── Coupon Code Logic ────────────────────────────────────────────────────────
 function initCoupon() {
-  console.log('initCoupon initialized');
-  const applyBtn = document.getElementById('coupon-apply-btn');
-  const inputEl  = document.getElementById('coupon-input');
-  const msgEl    = document.getElementById('coupon-message');
-
-  if (!applyBtn || !inputEl || !msgEl) {
-    console.warn('Coupon elements not found:', { applyBtn, inputEl, msgEl });
-    return;
-  }
-
-  applyBtn.addEventListener('click', () => {
-    const rawVal = inputEl.value.trim();
-    // 全角英数字を半角英数字に変換
-    const code = rawVal.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => {
-      return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
-    }).toUpperCase();
-
-    console.log('Coupon click code:', code);
-
-    if (!code) {
-      msgEl.style.display = 'block';
-      msgEl.style.color = '#ff6b6b';
-      msgEl.textContent = 'クーポンコードを入力してください。';
-      return;
-    }
-
-    if (code === 'COEDO9824') {
-      couponApplied = true;
-      appliedCouponCode = 'COEDO9824';
-      loadCart(); // Recalculate totals
-
-      msgEl.style.display = 'block';
-      msgEl.style.color = 'var(--success-color)';
-      msgEl.textContent = '1,000円引きクーポンが適用されました！';
-      applyBtn.disabled = true;
-      inputEl.disabled = true;
-      
-      alert('【適用完了】\nクーポン「COEDO9824」（1,000円引き）が適用されました！');
-    } else {
-      couponApplied = false;
-      appliedCouponCode = '';
-      loadCart();
-
-      msgEl.style.display = 'block';
-      msgEl.style.color = '#ff6b6b';
-      msgEl.textContent = '無効なクーポンコードです。';
-      
-      alert('【エラー】\n入力されたコード「' + rawVal + '」は無効なクーポンです。');
-    }
-  });
+  // HTML内のインラインスクリプトに移行したため、ここでは何もしません（重複登録防止）
 }
 
 // ─── Real-time Validation ────────────────────────────────────────────────────

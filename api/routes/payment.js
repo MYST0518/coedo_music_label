@@ -83,13 +83,16 @@ router.post('/payment', async (req, res) => {
       return res.status(400).json({ error: 'Invalid order data.', details });
     }
 
-    const { sourceId, quantity, customer, couponCode } = value;
+    const { sourceId, productId, quantity, customer, couponCode } = value;
 
-    console.log(`[${timestamp}][${requestId}] Creating order — ${quantity}x This is AI Sound (couponCode: ${couponCode || 'none'})`);
+    console.log(`[${timestamp}][${requestId}] Creating order — ${quantity}x ${productId} (couponCode: ${couponCode || 'none'})`);
 
-    // クーポン割引の検証
+    // クーポン割引の検証（この商品のみに適用可能）
     const discounts = [];
-    const isValidCoupon = couponCode && couponCode.trim().toUpperCase() === 'COEDO9824';
+    const isValidCoupon = couponCode && 
+                          couponCode.trim().toUpperCase() === 'COEDO9824' && 
+                          productId === 'this-is-ai-sound';
+
     if (isValidCoupon) {
       const discountAmount = 1000n * BigInt(quantity);
       discounts.push({

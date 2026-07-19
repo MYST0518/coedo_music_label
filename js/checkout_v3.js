@@ -54,12 +54,12 @@ function loadCart() {
     const raw = sessionStorage.getItem('coedo_cart');
     if (raw) {
       const cart = JSON.parse(raw);
-      qty = Math.max(1, Math.min(5, parseInt(cart.quantity) || 1));
+      qty = Math.max(1, Math.min(20, parseInt(cart.quantity) || 1));
     }
   } catch (e) { /* ignore */ }
 
   const itemTotal = PRICE * qty;
-  const discount  = window.couponApplied ? 1000 : 0;
+  const discount  = window.couponApplied ? (1000 * qty) : 0;
   const grandTotal = Math.max(0, itemTotal - discount) + SHIPPING;
 
   // Update summary UI

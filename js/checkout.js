@@ -156,6 +156,12 @@ async function initSquare() {
     return;
   }
 
+  // Display sandbox test card guidance if in sandbox mode
+  if (config.environment === 'sandbox') {
+    const notice = document.getElementById('sandbox-notice');
+    if (notice) notice.style.display = 'block';
+  }
+
   try {
     squarePayments = window.Square.payments(config.applicationId, config.locationId);
   } catch (e) {

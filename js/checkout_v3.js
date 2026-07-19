@@ -62,8 +62,20 @@ function loadCart() {
 
   const isEligible = productId === 'this-is-ai-sound';
   const itemTotal = PRICE * qty;
-  const discount  = (window.couponApplied && isEligible) ? (1000 * qty) : 0;
-  const grandTotal = Math.max(0, itemTotal - discount) + SHIPPING;
+  
+  let discount = 0;
+  let shipping = SHIPPING;
+
+  if (window.couponApplied && isEligible) {
+    if (window.appliedCouponCode === 'COEDO9824') {
+      discount = 1000 * qty;
+    } else if (window.appliedCouponCode === '100YENTEST') {
+      discount = (PRICE - 100) * qty;
+      shipping = 0;
+    }
+  }
+
+  const grandTotal = Math.max(0, itemTotal - discount) + shipping;
 
   // Update summary UI
   const setEl = (id, val) => {
@@ -73,6 +85,7 @@ function loadCart() {
   setEl('summary-qty',         qty);
   setEl('summary-item-price',  formatJPY(itemTotal));
   setEl('summary-subtotal',    formatJPY(itemTotal));
+  setEl('summary-shipping',    shipping === 0 ? '無料' : formatJPY(shipping));
 
   // Toggle Discount UI
   const discountRow = document.getElementById('coupon-discount-row');

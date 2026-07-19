@@ -302,7 +302,7 @@
             </div>
             <div class="order-row">
               <span class="label">送料（全国一律）</span>
-              <span class="value">¥300</span>
+              <span class="value" id="summary-shipping">¥300</span>
             </div>
 
             <div class="order-row total">
@@ -349,7 +349,7 @@
             return;
           }
 
-          if (code === 'COEDO9824') {
+          if (code === 'COEDO9824' || code === '100YENTEST') {
             let productId = '';
             try {
               const raw = sessionStorage.getItem('coedo_cart');
@@ -367,7 +367,7 @@
             }
 
             window.couponApplied = true;
-            window.appliedCouponCode = 'COEDO9824';
+            window.appliedCouponCode = code;
             
             if (typeof window.loadCart === 'function') {
               window.loadCart();
@@ -375,11 +375,17 @@
 
             msgEl.style.display = 'block';
             msgEl.style.color = '#4caf50';
-            msgEl.textContent = '1枚あたり1,000円引きクーポンが適用されました！';
+            
+            if (code === 'COEDO9824') {
+              msgEl.textContent = '1枚あたり1,000円引きクーポンが適用されました！';
+              alert('【適用完了】\nクーポン「COEDO9824」（1枚あたり1,000円引き）が適用されました！');
+            } else {
+              msgEl.textContent = 'テストクーポン（1枚100円 ＆ 送料無料）が適用されました！';
+              alert('【適用完了】\nクーポン「100yentest」（1枚100円 ＆ 送料無料）が適用されました！');
+            }
+            
             applyBtn.disabled = true;
             inputEl.disabled = true;
-            
-            alert('【適用完了】\nクーポン「COEDO9824」（1枚あたり1,000円引き）が適用されました！');
           } else {
             window.couponApplied = false;
             window.appliedCouponCode = '';

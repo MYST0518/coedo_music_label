@@ -348,6 +348,22 @@
           }
 
           if (code === 'COEDO9824') {
+            let productId = '';
+            try {
+              const raw = sessionStorage.getItem('coedo_cart');
+              if (raw) productId = JSON.parse(raw).productId;
+            } catch (e) {}
+
+            if (productId !== 'this-is-ai-sound') {
+              window.couponApplied = false;
+              window.appliedCouponCode = '';
+              msgEl.style.display = 'block';
+              msgEl.style.color = '#ff6b6b';
+              msgEl.textContent = 'このクーポンは指定の商品のみにご利用いただけます。';
+              alert('【エラー】\nこのクーポンは指定の商品（This is AI Sound）のみに適用可能です。');
+              return;
+            }
+
             window.couponApplied = true;
             window.appliedCouponCode = 'COEDO9824';
             

@@ -46,7 +46,8 @@ const orderSchema = Joi.object({
     prefecture: Joi.string().max(10).required(),
     address1: Joi.string().max(100).required(),
     address2: Joi.string().max(100).allow('').optional()
-  }).required()
+  }).required(),
+  couponCode: Joi.string().allow('').optional()
 });
 
 // ─── GET /api/inventory ───────────────────────────────────────────────────────
@@ -82,9 +83,19 @@ router.post('/payment', async (req, res) => {
       return res.status(400).json({ error: 'Invalid order data.', details });
     }
 
-    const { sourceId, quantity, customer } = value;
+    const { sourceId, quantity, customer, couponCode } = value;
 
-    console.log(`[${timestamp}][${requestId}] Creating order — ${quantity}x This is AI Sound`);
+    console.log(`[${timestamp}][${requestId}] Creating order — ${quantity}x This is AI Sound (couponCode: ${couponCode || 'none'})`);
+
+    // クーポン割引の検証
+    const discounts = [];
+    const isValidCoupon = couponCode && couponCode.trim().toUpperCase() === 'COEDO9824';
+    if (isValidCoupon) {
+      discounts.push({
+        name: 'クーポン割引 (COEDO9824)',
+        amountMoney: { amount: 1000n, currency: 'JPY' }
+      });
+    }
 
     // 2. Square Orders API でカタログ商品の注文を作成
     //    これにより Square 管理画面に正確な売上・在庫データが反映される
@@ -105,6 +116,7 @@ router.post('/payment', async (req, res) => {
             calculationPhase: 'TOTAL_PHASE',
           }
         ],
+        discounts: discounts.length > 0 ? discounts : undefined
       }
     });
 

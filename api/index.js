@@ -87,15 +87,22 @@ app.use(helmet({
 
 // ─── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
-  process.env.ALLOWED_ORIGIN || 'http://localhost:3000',
-  // Add your Vercel deployment URL here
+  'http://localhost:3000',
+  'https://coedo-shop.vercel.app'
 ];
+if (process.env.ALLOWED_ORIGIN) {
+  allowedOrigins.push(process.env.ALLOWED_ORIGIN);
+}
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (server-to-server, curl, etc.) in dev
-    if (!origin && process.env.NODE_ENV !== 'production') return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Allow requests with no origin (like mobile apps, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow exact matched domains or Vercel preview environments
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    console.warn(`[CORS] Rejected Origin: ${origin}`);
     callback(new Error('CORS policy violation'));
   },
   credentials: true,

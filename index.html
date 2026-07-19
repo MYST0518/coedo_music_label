@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO -->
+  <title>This is AI Sound — CD販売 | Coedo Music Labo</title>
+  <meta name="description" content="Coedo Music Laboが贈る最先端AIアーティストコンピレーションアルバム『This is AI Sound』を公式オンラインショップで購入。14組のAIアーティストが参加した限定100枚のリアルパッケージCD。">
+  <meta name="robots" content="index, follow">
+
+  <!-- OGP -->
+  <meta property="og:title" content="This is AI Sound — CD | Coedo Music Labo">
+  <meta property="og:description" content="最先端AIアーティストコンピレーションアルバム『This is AI Sound』限定100枚販売中。2,500円（＋送料300円）">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/album_cover.png">
+  <meta property="og:locale" content="ja_JP">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/album_cover.png">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <nav class="site-nav">
+    <div class="container nav-inner">
+      <div class="nav-logo">
+        <div class="nav-logo-icon">🎵</div>
+        <span>Coedo Music Labo</span>
+        <span class="nav-tagline">Official Shop</span>
+      </div>
+      <a href="https://coedo-music.jp/" target="_blank" rel="noopener" style="font-size:0.8rem;color:var(--text-muted);">公式サイト →</a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        NOW ON SALE — 2026.8.10 発売予定
+      </div>
+      <h1 class="hero-title">
+        <span class="hero-title-main">This is AI Sound</span>
+        <span class="hero-title-sub">Coedo Music Labo 公式オンラインショップ</span>
+      </h1>
+      <p class="hero-desc">
+        最先端AIアーティスト14組が集結した<br>
+        コンピレーションアルバム — 限定100枚のリアルパッケージCD
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Album Product Card ────────────────────────────── -->
+  <main>
+    <section class="album-section">
+      <div class="container">
+
+        <!-- Event Banner -->
+        <div class="event-banner">
+          <span class="event-banner-icon">🎪</span>
+          <div class="event-banner-text">
+            <div class="event-banner-title">リアル販売イベント決定！</div>
+            <div class="event-banner-desc">2026年8月14日（金）吉祥寺NEPO ライブイベント会場にてリアル限定販売</div>
+          </div>
+        </div>
+
+        <div class="album-card">
+          <!-- Cover -->
+          <div class="album-cover-wrap">
+            <img
+              src="/album_cover.png"
+              alt="This is AI Sound アルバムジャケット"
+              class="album-cover"
+              id="album-cover-img"
+            >
+            <div class="limited-badge">限定 100枚</div>
+          </div>
+
+          <!-- Info -->
+          <div class="album-info">
+            <div class="album-label">Coedo Music Labo — コンピレーションアルバム</div>
+            <h2 class="album-name">This is AI Sound</h2>
+            <p class="album-subtitle">全14組のAIアーティストが参加した初のコンピレーションシリーズ第1弾</p>
+
+            <div class="album-meta">
+              <div class="meta-item">
+                <span class="meta-label">発売日</span>
+                <span class="meta-value">2026年8月10日</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">収録数</span>
+                <span class="meta-value">全14曲</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">仕様</span>
+                <span class="meta-value">CDパッケージ + ネット試聴</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">発売元</span>
+                <span class="meta-value">株式会社Coedo Music Labo</span>
+              </div>
+            </div>
+
+            <!-- Stock -->
+            <div class="stock-bar-wrap">
+              <div class="stock-label">
+                <span>残り枚数</span>
+                <span id="stock-count">100枚中 <strong>100</strong> 枚残り</span>
+              </div>
+              <div class="stock-bar">
+                <div class="stock-bar-fill" id="stock-bar" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="price-section">
+              <div class="price-main">¥2,500</div>
+              <div class="price-shipping">＋ 全国一律送料 ¥300（税込）</div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="quantity-section">
+              <span class="qty-label">数量：</span>
+              <div class="qty-control">
+                <button class="qty-btn" id="qty-minus" aria-label="数量を減らす" disabled>−</button>
+                <div class="qty-display" id="qty-display">1</div>
+                <button class="qty-btn" id="qty-plus" aria-label="数量を増やす">＋</button>
+              </div>
+              <span id="qty-subtotal" style="font-size:0.9rem;color:var(--text-secondary);">小計 ¥2,800</span>
+            </div>
+
+            <!-- CTA -->
+            <button class="btn-primary" id="btn-buy" aria-label="カートに追加して購入へ進む">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              購入手続きへ進む
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Track List ───────────────────────────────────── -->
+    <section class="tracks-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">Tracklist</div>
+          <h2 class="section-title">収録楽曲</h2>
+        </div>
+        <div class="tracks-grid" id="tracks-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── About ─────────────────────────────────────────── -->
+    <section class="about-section">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-label">About</div>
+          <h2 class="section-title">このアルバムについて</h2>
+        </div>
+        <div class="about-grid">
+          <div class="about-card">
+            <div class="about-icon">🤖</div>
+            <div class="about-title">最先端AIアーティスト</div>
+            <p class="about-text">日本のAI音楽シーンを牽引する14組の気鋭アーティストが一堂に集結。多彩なジャンルと世界観が織りなすコンピレーション。</p>
+          </div>
+          <div class="about-card">
+            <div class="about-icon">💿</div>
+            <div class="about-title">リアルパッケージ＆ネット試聴</div>
+            <p class="about-text">CDが聴けない環境のために、ネット上で試聴できるプレイヤーリンクも実装。デジタル＆アナログの両方で楽しめます。</p>
+          </div>
+          <div class="about-card">
+            <div class="about-icon">⭐</div>
+            <div class="about-title">初回限定100枚</div>
+            <p class="about-text">弊社が費用を完全負担した本格的なリアルパッケージ。初回プレスは100枚限定のため、お早めにご購入ください。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-logo">🎵 Coedo Music Labo</div>
+      <div class="footer-links">
+        <a href="https://coedo-music.jp/" target="_blank" rel="noopener">公式サイト</a>
+        <a href="https://coedo-music.jp/pr/index.html" target="_blank" rel="noopener">プレスリリース</a>
+        <a href="https://x.com/" target="_blank" rel="noopener">X (Twitter)</a>
+      </div>
+      <p class="footer-copy">© 2026 Coedo Music Labo / AI Sound Cypher. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/shop.js"></script>
+</body>
+</html>

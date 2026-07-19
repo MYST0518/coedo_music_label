@@ -189,6 +189,7 @@ router.post('/payment', async (req, res) => {
       squareOrderId: order.id,
       paymentId: payment.id,
       amount: Number(totalMoney.amount),
+      receiptUrl: payment.receiptUrl,
       message: 'ご購入ありがとうございます！'
     });
 

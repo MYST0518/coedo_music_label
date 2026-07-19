@@ -112,6 +112,29 @@ function getFormData() {
   };
 }
 
+function loadSquareSDK(environment) {
+  return new Promise((resolve, reject) => {
+    if (window.Square) {
+      resolve();
+      return;
+    }
+    const src = environment === 'production'
+      ? 'https://web.squarecdn.com/v1/square.js'
+      : 'https://sandbox.web.squarecdn.com/v1/square.js';
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => {
+      console.log(`Square SDK loaded for ${environment}`);
+      resolve();
+    };
+    script.onerror = () => {
+      reject(new Error('Square SDK failed to load'));
+    };
+    document.head.appendChild(script);
+  });
+}
+
 // ─── Square Init ─────────────────────────────────────────────────────────────
 async function initSquare() {
   // Fetch public config from server (Application ID, Location ID)
@@ -125,8 +148,11 @@ async function initSquare() {
     return;
   }
 
-  if (!window.Square) {
-    showError('Squareライブラリの読み込みに失敗しました。ページを再読み込みしてください。');
+  // Load SDK dynamically based on environment
+  try {
+    await loadSquareSDK(config.environment);
+  } catch (e) {
+    showError('Square決済ライブラリの読み込みに失敗しました。時間をおいて再読み込みしてください。');
     return;
   }
 

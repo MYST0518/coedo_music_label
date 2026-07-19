@@ -166,7 +166,7 @@ async function fetchInventory() {
 
 // ─── Quantity Controls ────────────────────────────────────────────────────────
 function updateQty(newQty) {
-  const maxQty = Math.min(5, currentStock);
+  const maxQty = Math.min(20, currentStock);
   quantity = Math.max(1, Math.min(maxQty, newQty));
   const display = document.getElementById('qty-display');
   const minus   = document.getElementById('qty-minus');

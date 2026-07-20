@@ -13,6 +13,9 @@ const paymentRouter = require('./routes/payment');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Vercel などのプロキシ経由のIPを信頼する設定（Rate Limit 用）
+app.set('trust proxy', 1);
+
 // ─── Security Headers (Helmet) ───────────────────────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: {
@@ -88,7 +91,8 @@ app.use(helmet({
 // ─── CORS ─────────────────────────────────────────────────────────────────────
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://coedo-shop.vercel.app'
+  'https://coedo-shop.vercel.app',
+  'https://shop.coedo-music.jp'
 ];
 if (process.env.ALLOWED_ORIGIN) {
   allowedOrigins.push(process.env.ALLOWED_ORIGIN);

@@ -70,6 +70,11 @@ function loadCart() {
   let discount = 0;
   let shipping = SHIPPING;
 
+  // 5枚以上購入キャンペーン：送料無料
+  if (qty >= 5) {
+    shipping = 0;
+  }
+
   if (window.couponApplied && isEligible) {
     if (window.appliedCouponCode === 'COEDO9824') {
       discount = 1000 * qty;
@@ -89,7 +94,9 @@ function loadCart() {
   setEl('summary-qty',         qty);
   setEl('summary-item-price',  formatJPY(itemTotal));
   setEl('summary-subtotal',    formatJPY(itemTotal));
-  setEl('summary-shipping',    shipping === 0 ? '無料' : formatJPY(shipping));
+  setEl('summary-shipping',    shipping === 0 
+    ? (window.appliedCouponCode === '100YENTEST' ? '無料' : '無料 (5枚以上特典)') 
+    : formatJPY(shipping));
 
   // Toggle Discount UI
   const discountRow = document.getElementById('coupon-discount-row');

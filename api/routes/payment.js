@@ -207,7 +207,7 @@ router.post('/payment', async (req, res) => {
     if (process.env.RESEND_API_KEY && customer.email) {
       const htmlBody = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e6dfd3; border-radius: 12px; background: #faf6ec; color: #1e3f4c;">
-          <h2 style="color: #3f9ab4; border-bottom: 2px solid #3f9ab4; padding-bottom: 8px;">Coedo Music Labo</h2>
+          <h2 style="color: #3f9ab4; border-bottom: 2px solid #3f9ab4; padding-bottom: 8px;">Coedo Music Labo Online Shop</h2>
           <p style="font-size: 1rem; font-weight: bold;">${customer.name} 様</p>
           <p>この度は <strong>Coedo Music Labo Online Shop</strong> にてご注文いただき、誠にありがとうございます。</p>
           
@@ -257,7 +257,7 @@ router.post('/payment', async (req, res) => {
 
           <hr style="border: 0; border-top: 1px solid #e6dfd3; margin: 20px 0;">
           <p style="font-size: 0.8rem; color: #87a2ad; text-align: center; margin: 0;">
-            Coedo Music Labo<br>
+            Coedo Music Labo Online Shop<br>
             <a href="https://coedo-music.jp/" target="_blank" style="color: #3f9ab4;">https://coedo-music.jp/</a>
           </p>
         </div>
@@ -265,9 +265,9 @@ router.post('/payment', async (req, res) => {
 
       try {
         const { data, error } = await resend.emails.send({
-          from: 'Coedo Music Labo <info@coedo-music.jp>',
+          from: 'Coedo Music Labo Online Shop <info@coedo-music.jp>',
           to: [customer.email],
-          subject: '【Coedo Music Labo】ご注文ありがとうございます！',
+          subject: '【Coedo Music Labo Online Shop】ご注文ありがとうございます！',
           html: htmlBody,
         });
         if (error) {

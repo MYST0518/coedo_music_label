@@ -5,6 +5,7 @@ const router = express.Router();
 const { Client, Environment } = require('square');
 const { v4: uuidv4 } = require('uuid');
 const { Resend } = require('resend');
+const Joi = require('joi');
 
 // ─── Resend Client ────────────────────────────────────────────────────────────
 const resend = new Resend(process.env.RESEND_API_KEY);

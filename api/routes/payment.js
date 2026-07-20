@@ -101,6 +101,11 @@ router.post('/payment', async (req, res) => {
 
     let shippingFee = SHIPPING_FEE_JPY;
 
+    // 5枚以上購入キャンペーン：送料無料
+    if (quantity >= 5) {
+      shippingFee = 0;
+    }
+
     if (isValidCoupon) {
       if (isCoedoCoupon) {
         const discountAmount = 1000n * BigInt(quantity);

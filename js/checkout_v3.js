@@ -49,14 +49,18 @@ function setLoading(loading) {
 
 // ─── Load Cart from sessionStorage ───────────────────────────────────────────
 function loadCart() {
+  window.loadCart = loadCart; // Expose globally early
+
   let qty = 1;
-  let productId = '';
+  let productId = 'this-is-ai-sound'; // デフォルト値を設定
   try {
     const raw = sessionStorage.getItem('coedo_cart');
     if (raw) {
       const cart = JSON.parse(raw);
       qty = Math.max(1, Math.min(20, parseInt(cart.quantity) || 1));
-      productId = cart.productId;
+      if (cart.productId) {
+        productId = cart.productId;
+      }
     }
   } catch (e) { /* ignore */ }
 

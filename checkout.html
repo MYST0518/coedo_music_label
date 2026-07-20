@@ -350,10 +350,15 @@
           }
 
           if (code === 'COEDO9824' || code === '100YENTEST') {
-            let productId = '';
+            let productId = 'this-is-ai-sound'; // デフォルト値を設定
             try {
               const raw = sessionStorage.getItem('coedo_cart');
-              if (raw) productId = JSON.parse(raw).productId;
+              if (raw) {
+                const parsed = JSON.parse(raw);
+                if (parsed && parsed.productId) {
+                  productId = parsed.productId;
+                }
+              }
             } catch (e) {}
 
             if (productId !== 'this-is-ai-sound') {

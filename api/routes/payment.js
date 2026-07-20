@@ -5,10 +5,7 @@ const router = express.Router();
 const { Client, Environment } = require('square');
 const { v4: uuidv4 } = require('uuid');
 const Joi = require('joi');
-const { Resend } = require('resend');
 
-// ─── Resend Client ────────────────────────────────────────────────────────────
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ─── Square Client ────────────────────────────────────────────────────────────
 const squareClient = new Client({
@@ -202,78 +199,7 @@ router.post('/payment', async (req, res) => {
     // 4. Success — log and respond
     console.log(`[${timestamp}][${requestId}] Payment completed — ID: ${payment.id}, Order: ${order.id}`);
 
-    // メール送信（Resend API — HTTPベースなのでVercel Serverless Functionで動作する）
-    if (process.env.RESEND_API_KEY && customer.email) {
-      const htmlBody = `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e6dfd3; border-radius: 12px; background: #faf6ec; color: #1e3f4c;">
-          <h2 style="color: #3f9ab4; border-bottom: 2px solid #3f9ab4; padding-bottom: 8px;">Coedo Music Labo</h2>
-          <p style="font-size: 1rem; font-weight: bold;">${customer.name} 様</p>
-          <p>この度は <strong>Coedo Music Labo Online Shop</strong> にてご注文いただき、誠にありがとうございます。</p>
-          
-          <div style="background: #ffffff; padding: 16px; border-radius: 8px; margin: 20px 0; border: 1px solid #e6dfd3;">
-            <h3 style="margin-top: 0; color: #244f5e; font-size: 0.95rem;">📦 ご注文内容</h3>
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-              <tr>
-                <td style="padding: 6px 0;"><strong>商品名:</strong></td>
-                <td style="text-align: right;">This is AI Sound (CD)</td>
-              </tr>
-              <tr>
-                <td style="padding: 6px 0;"><strong>数量:</strong></td>
-                <td style="text-align: right;">${quantity} 枚</td>
-              </tr>
-              <tr>
-                <td style="padding: 6px 0;"><strong>送料（全国一律）:</strong></td>
-                <td style="text-align: right;">${shippingFee === 0 ? '無料' : '¥300'}</td>
-              </tr>
-              ${isValidCoupon ? `
-              <tr style="color: #ff6b6b;">
-                <td style="padding: 6px 0;"><strong>クーポン割引 (${normalizedCoupon}):</strong></td>
-                <td style="text-align: right;">-¥${Number((isCoedoCoupon ? 1000 : 2400) * quantity).toLocaleString()}</td>
-              </tr>` : ''}
-              <tr style="border-top: 1px solid #e6dfd3; font-weight: bold; font-size: 1.05rem;">
-                <td style="padding: 10px 0 0;">合計金額:</td>
-                <td style="text-align: right; padding: 10px 0 0; color: #244f5e;">¥${Number(totalMoney.amount).toLocaleString()} (税込)</td>
-              </tr>
-            </table>
-          </div>
 
-          <div style="background: #ffffff; padding: 16px; border-radius: 8px; margin: 20px 0; border: 1px solid #e6dfd3; font-size: 0.88rem; line-height: 1.6;">
-            <h3 style="margin-top: 0; color: #244f5e; font-size: 0.95rem;">🚚 お届け先住所</h3>
-            <p style="margin: 4px 0;">〒${customer.postalCode}</p>
-            <p style="margin: 4px 0;">${customer.prefecture} ${customer.address1} ${customer.address2 || ''}</p>
-            <p style="margin: 4px 0;">宛先: ${customer.name} 様</p>
-            <p style="margin: 4px 0;">電話: ${customer.phone}</p>
-          </div>
-
-          <p style="font-size: 0.9rem; line-height: 1.6;">商品（CD）は、<strong>2026年8月10日</strong>の発売日以降に順次発送いたします。商品の発送が完了しましたら、改めてご連絡を差し上げます。</p>
-          <p style="font-size: 0.9rem; line-height: 1.6;">CDには<strong>ネット試聴プレイヤーのリンク</strong>が同梱されます。CDプレーヤーがお手元にない場合でもお楽しみいただけますので、楽しみにお待ちください！</p>
-
-          <hr style="border: 0; border-top: 1px solid #e6dfd3; margin: 20px 0;">
-          <p style="font-size: 0.8rem; color: #87a2ad; text-align: center; margin: 0;">
-            Coedo Music Labo<br>
-            <a href="https://coedo-music.jp/" target="_blank" style="color: #3f9ab4;">https://coedo-music.jp/</a>
-          </p>
-        </div>
-      `;
-
-      try {
-        const { data, error } = await resend.emails.send({
-          from: 'Coedo Music Labo <onboarding@resend.dev>',
-          to: [customer.email],
-          subject: '【Coedo Music Labo】ご注文ありがとうございます！',
-          html: htmlBody,
-        });
-        if (error) {
-          console.error(`[${timestamp}][${requestId}] Failed to send email:`, JSON.stringify(error));
-        } else {
-          console.log(`[${timestamp}][${requestId}] Order confirmation email sent: ${data.id}`);
-        }
-      } catch (mailErr) {
-        console.error(`[${timestamp}][${requestId}] Failed to send email:`, mailErr.message || mailErr);
-      }
-    } else {
-      console.warn(`[${timestamp}][${requestId}] Email skipped — RESEND_API_KEY: ${!!process.env.RESEND_API_KEY}, email: ${!!customer.email}`);
-    }
 
     return res.status(200).json({
       success: true,

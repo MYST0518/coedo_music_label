@@ -178,8 +178,13 @@ function updateQty(newQty) {
   if (minus)   minus.disabled = quantity <= 1;
   if (plus)    plus.disabled  = quantity >= maxQty;
   if (subtotal) {
-    const total = PRICE * quantity + SHIPPING;
-    subtotal.textContent = `小計 ¥${total.toLocaleString('ja-JP')}（送料込）`;
+    const shipping = quantity >= 5 ? 0 : SHIPPING;
+    const total = PRICE * quantity + shipping;
+    if (quantity >= 5) {
+      subtotal.innerHTML = `小計 ¥${total.toLocaleString('ja-JP')} <span style="color:#2ecc71; font-weight:bold; font-size:0.8rem; margin-left:4px;">(5枚以上送料無料特典適用)</span>`;
+    } else {
+      subtotal.textContent = `小計 ¥${total.toLocaleString('ja-JP')}（送料込）`;
+    }
   }
 
   // 売り切れ時はボタンを無効化
@@ -196,11 +201,12 @@ function updateQty(newQty) {
 
 // ─── Cart → Checkout ─────────────────────────────────────────────────────────
 function goToCheckout() {
+  const shipping = quantity >= 5 ? 0 : SHIPPING;
   // Save cart to sessionStorage
   const cart = {
     productId: 'this-is-ai-sound',
     quantity,
-    total: PRICE * quantity + SHIPPING
+    total: PRICE * quantity + shipping
   };
   try {
     sessionStorage.setItem('coedo_cart', JSON.stringify(cart));

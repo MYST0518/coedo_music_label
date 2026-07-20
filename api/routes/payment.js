@@ -210,7 +210,7 @@ router.post('/payment', async (req, res) => {
     // 4. Success — log and respond
     console.log(`[${timestamp}][${requestId}] Payment completed — ID: ${payment.id}, Order: ${order.id}`);
 
-    // メール送信（非同期）
+    // メール送信（awaitで完了を保証 — Serverless Functionはres返却後にコンテナが終了するため）
     if (process.env.SMTP_USER && process.env.SMTP_PASS && customer.email) {
       const fromName = process.env.SMTP_FROM_NAME || 'Coedo Music Labo';
       const mailOptions = {
@@ -271,9 +271,14 @@ router.post('/payment', async (req, res) => {
         `
       };
 
-      mailTransporter.sendMail(mailOptions)
-        .then(info => console.log(`[${timestamp}][${requestId}] Order confirmation email sent: ${info.messageId}`))
-        .catch(err => console.error(`[${timestamp}][${requestId}] Failed to send email:`, err));
+      try {
+        const info = await mailTransporter.sendMail(mailOptions);
+        console.log(`[${timestamp}][${requestId}] Order confirmation email sent: ${info.messageId}`);
+      } catch (mailErr) {
+        console.error(`[${timestamp}][${requestId}] Failed to send email:`, mailErr.message || mailErr);
+      }
+    } else {
+      console.warn(`[${timestamp}][${requestId}] Email skipped — SMTP_USER: ${!!process.env.SMTP_USER}, SMTP_PASS: ${!!process.env.SMTP_PASS}, email: ${!!customer.email}`);
     }
 
     return res.status(200).json({

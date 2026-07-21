@@ -7,6 +7,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const https = require('https');
 
 const paymentRouter = require('./routes/payment');
 
@@ -67,6 +68,10 @@ app.use(helmet({
         'https://pci-connect.squareup.com',
         'https://squareupsandbox.com',
         'https://squareup.com'
+      ],
+      mediaSrc: [
+        "'self'",
+        'https://player.coedo-music.jp'
       ],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: []
@@ -142,6 +147,55 @@ const paymentLimiter = rateLimit({
 app.use(globalLimiter);
 app.use('/api/payment', paymentLimiter);
 app.use('/payment', paymentLimiter);
+
+// ─── Audio Proxy (30s preview — avoids CORS) ────────────────────────────────
+// ブラウザは同じドメイン /api/audio/xxx.mp3 を叩くだけでOK
+// サーバー側でプレイヤーサイトから音声ファイルを取得してストリーミングする
+const ALLOWED_AUDIO_FILES = new Set([
+  'audio/エンドロールシンドローム - mensbrief(1).mp3',
+  'audio/Generate The Universe_しらたま - しらたまSuzaku.mp3',
+  'audio/gravity_s_茶トラ - 茶トラ-Brown tiger cat music-.mp3',
+  'audio/Spring Static_HMatsui - Hirohito Matsui.mp3',
+  'audio/Bu11e5 f10ra1e5._AinN3gRaM - toku Hi.mp3',
+  'audio/YONAOSHI_denDero3.mp3',
+  'audio/Jump_MakotoAI - Makoto.mp3',
+  'audio/mastered_No Return, No Problem feat. MakotoAI_01 - でもん.mp3',
+  'audio/よく似てる - 龍一川村.mp3',
+  'audio/わたしの白夜_ammr - Ogi Taro.mp3',
+  'audio/ノイズキャンセル_鈴木憂一(Highdrama) - 鈴木憂一.mp3',
+  'audio/春のノスタルジック・カフェ_旧雅之 - Masa Q.mp3',
+  'audio/空へ_真夜中のラジオ - shinji takano.mp3',
+  'audio/星読みの祝祭_ELEMAYU - nmt kj.mp3'
+]);
+
+app.get('/api/audio', (req, res) => {
+  const file = req.query.file ? decodeURIComponent(req.query.file) : '';
+
+  // ホワイトリスト検証（パストラバーサル対策）
+  if (!ALLOWED_AUDIO_FILES.has(file)) {
+    return res.status(404).json({ error: 'Audio file not found.' });
+  }
+
+  const encodedFile = encodeURI(file);
+  const upstreamUrl = `https://player.coedo-music.jp/${encodedFile}`;
+
+  https.get(upstreamUrl, (upstream) => {
+    if (upstream.statusCode !== 200) {
+      res.status(upstream.statusCode || 502).json({ error: 'Failed to fetch audio.' });
+      return;
+    }
+
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    if (upstream.headers['content-length']) {
+      res.setHeader('Content-Length', upstream.headers['content-length']);
+    }
+    upstream.pipe(res);
+  }).on('error', (err) => {
+    console.error('[AudioProxy] Error:', err.message);
+    res.status(502).json({ error: 'Audio proxy error.' });
+  });
+});
 
 // ─── API Routes ──────────────────────────────────────────────────────────────
 app.use('/api', paymentRouter);

@@ -156,6 +156,7 @@ function renderTracks() {
 function initGlobalAudio() {
   if (!activeAudio) {
     activeAudio = new Audio();
+    activeAudio.crossOrigin = "anonymous"; // ドメイン跨ぎの再生をブラウザで許可する
     activeAudio.preload = 'metadata';
 
     activeAudio.addEventListener('timeupdate', () => {
@@ -182,7 +183,10 @@ function togglePlayTrack(index) {
     stopAllPlayback();
     activeIndex = index;
     const track = TRACKS[index];
-    activeAudio.src = AUDIO_BASE_URL + track.audio;
+    
+    // 日本語やスペースを安全にエンコードしたURLを設定
+    activeAudio.src = AUDIO_BASE_URL + encodeURI(track.audio);
+    activeAudio.load(); // 明示的にロードを走らせる
     
     // UIのステータスを再生中に
     setCardPlayUI(index, true);

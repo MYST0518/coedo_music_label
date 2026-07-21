@@ -110,7 +110,7 @@ let currentStock = 100;  // リアルタイム在庫（APIから更新）
 let totalStock = 100;    // 限定枚数（APIから更新）
 
 // ─── Player State ────────────────────────────────────────────────────────────────────────
-const AUDIO_BASE_URL = 'https://player.coedo-music.jp/';
+const AUDIO_BASE_URL = 'https://this-is-ai-sound-player.coedo-music.jp/';
 let activeAudio = null;
 let activeIndex = -1;
 let isPlaying = false;

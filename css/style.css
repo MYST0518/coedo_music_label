@@ -778,15 +778,15 @@ img { max-width: 100%; display: block; }
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: rgba(36, 79, 94, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(36, 79, 94, 0.85); /* 少し透明度を上げてジャケットが見えるように */
+  border: 2px solid rgba(255, 255, 255, 0.4);
   color: #FAF6EC;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0;
-  transform: scale(0.9);
+  opacity: 0.9; /* 常に表示 */
+  transform: scale(1);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   z-index: 2;
@@ -800,12 +800,14 @@ img { max-width: 100%; display: block; }
 .track-thumb-wrap:hover .track-play-btn,
 .track-play-btn.playing {
   opacity: 1;
-  transform: scale(1);
+  background: var(--gold-dark);
+  border-color: #fff;
+  transform: scale(1.05);
 }
 
 .track-play-btn:hover {
   background: var(--gold-light);
-  transform: scale(1.05);
+  transform: scale(1.1);
   box-shadow: 0 10px 28px rgba(79, 173, 197, 0.4);
 }
 

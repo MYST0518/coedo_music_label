@@ -110,7 +110,7 @@ let currentStock = 100;  // リアルタイム在庫（APIから更新）
 let totalStock = 100;    // 限定枚数（APIから更新）
 
 // ─── Player State ────────────────────────────────────────────────────────────────────────
-const AUDIO_PROXY_URL = '/api/audio?file='; // 同一ドメイン経由でCORS回避
+const AUDIO_BASE_URL = 'https://player.coedo-music.jp/';
 let activeAudio = null;
 let activeIndex = -1;
 let isPlaying = false;
@@ -156,7 +156,8 @@ function renderTracks() {
 function initGlobalAudio() {
   if (!activeAudio) {
     activeAudio = new Audio();
-    activeAudio.preload = 'metadata';
+    // crossOriginは設定しない。ブラウザはno-corsモードで音声を再生する。
+    activeAudio.preload = 'none';
 
     activeAudio.addEventListener('timeupdate', () => {
       // 30秒試聴制限
@@ -183,8 +184,8 @@ function togglePlayTrack(index) {
     activeIndex = index;
     const track = TRACKS[index];
     
-    // プロキシAPI経由で音声を取得（同一ドメイン、CORSエラーなし）
-    activeAudio.src = AUDIO_PROXY_URL + encodeURIComponent(track.audio);
+    // 直接URLで再生（プレイヤーサイトのCORSヘッダーに任せる）
+    activeAudio.src = AUDIO_BASE_URL + encodeURI(track.audio);
     activeAudio.load();
     
     // UIのステータスを再生中に

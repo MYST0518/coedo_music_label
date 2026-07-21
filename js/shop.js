@@ -109,8 +109,8 @@ let quantity = 1;
 let currentStock = 100;  // リアルタイム在庫（APIから更新）
 let totalStock = 100;    // 限定枚数（APIから更新）
 
-// ─── Player State ─────────────────────────────────────────────────────────────
-const AUDIO_BASE_URL = 'https://player.coedo-music.jp/';
+// ─── Player State ────────────────────────────────────────────────────────────────────────
+const AUDIO_PROXY_URL = '/api/audio?file='; // 同一ドメイン経由でCORS回避
 let activeAudio = null;
 let activeIndex = -1;
 let isPlaying = false;
@@ -156,7 +156,6 @@ function renderTracks() {
 function initGlobalAudio() {
   if (!activeAudio) {
     activeAudio = new Audio();
-    activeAudio.crossOrigin = "anonymous"; // ドメイン跨ぎの再生をブラウザで許可する
     activeAudio.preload = 'metadata';
 
     activeAudio.addEventListener('timeupdate', () => {
@@ -184,9 +183,9 @@ function togglePlayTrack(index) {
     activeIndex = index;
     const track = TRACKS[index];
     
-    // 日本語やスペースを安全にエンコードしたURLを設定
-    activeAudio.src = AUDIO_BASE_URL + encodeURI(track.audio);
-    activeAudio.load(); // 明示的にロードを走らせる
+    // プロキシAPI経由で音声を取得（同一ドメイン、CORSエラーなし）
+    activeAudio.src = AUDIO_PROXY_URL + encodeURIComponent(track.audio);
+    activeAudio.load();
     
     // UIのステータスを再生中に
     setCardPlayUI(index, true);

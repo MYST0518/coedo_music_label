@@ -78,6 +78,9 @@ function loadCart() {
   if (window.couponApplied && isEligible) {
     if (window.appliedCouponCode === 'COEDO9824') {
       discount = 1000 * qty;
+    } else if (window.appliedCouponCode === 'AILM0814') {
+      discount = 500 * qty;
+      shipping = 0;
     } else if (window.appliedCouponCode === '100YENTEST') {
       discount = (PRICE - 100) * qty;
       shipping = 0;
@@ -95,7 +98,8 @@ function loadCart() {
   setEl('summary-item-price',  formatJPY(itemTotal));
   setEl('summary-subtotal',    formatJPY(itemTotal));
   setEl('summary-shipping',    shipping === 0 
-    ? (window.appliedCouponCode === '100YENTEST' ? '無料' : '無料 (5枚以上特典)') 
+    ? (window.appliedCouponCode === '100YENTEST' ? '無料' : 
+       (window.appliedCouponCode === 'AILM0814' ? '無料 (吉祥寺受け取り)' : '無料 (5枚以上特典)')) 
     : formatJPY(shipping));
 
   // Toggle Discount UI

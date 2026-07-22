@@ -97,7 +97,8 @@ router.post('/payment', async (req, res) => {
     const normalizedCoupon = couponCode ? couponCode.trim().toUpperCase() : '';
     const isCoedoCoupon = normalizedCoupon === 'COEDO9824';
     const isTestCoupon = normalizedCoupon === '100YENTEST';
-    const isValidCoupon = (isCoedoCoupon || isTestCoupon) && productId === 'this-is-ai-sound';
+    const isKichijojiCoupon = normalizedCoupon === 'AILM0814';
+    const isValidCoupon = (isCoedoCoupon || isTestCoupon || isKichijojiCoupon) && productId === 'this-is-ai-sound';
 
     let shippingFee = SHIPPING_FEE_JPY;
 
@@ -113,6 +114,13 @@ router.post('/payment', async (req, res) => {
           name: 'クーポン割引 (COEDO9824)',
           amountMoney: { amount: discountAmount, currency: 'JPY' }
         });
+      } else if (isKichijojiCoupon) {
+        const discountAmount = 500n * BigInt(quantity);
+        discounts.push({
+          name: '吉祥寺受け取りクーポン割引 (AILM0814)',
+          amountMoney: { amount: discountAmount, currency: 'JPY' }
+        });
+        shippingFee = 0;
       } else if (isTestCoupon) {
         const discountAmount = 2400n * BigInt(quantity);
         discounts.push({

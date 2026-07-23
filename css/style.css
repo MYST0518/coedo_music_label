@@ -960,3 +960,22 @@ img { max-width: 100%; display: block; }
   }
 }
 
+.jacket-credit {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.jacket-credit a {
+  color: var(--gold-primary);
+  font-weight: 500;
+  transition: color var(--transition);
+}
+
+.jacket-credit a:hover {
+  color: var(--gold-light);
+  text-decoration: underline;
+}
+
